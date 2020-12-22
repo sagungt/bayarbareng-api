@@ -8,7 +8,7 @@ Resource | Action | URI | Body
 Admin | Signing up user account | /sign-up (POST) | *name*, *email*, *password*, *password_repeat*
 Admin | Login admin account | /login (POST) | *email*, *password*
 Admin | List all admin user data | /list-admin (GET) | 
-Admin | Editing admin user data | /admin/{id} (PUT) | *email*, *password*
+Admin | Editing admin user data | /admin/{id} (PUT) | *name*, *email*, *password*, *password_repeat*
 Admin | Deleting admin account | /admin/{id} (DELETE) | 
 Customer | List all customer | /list-customer (GET) | 
 Customer | Add new customer | /customer (POST) | *email*, *langganan*, *lama_langganan*
