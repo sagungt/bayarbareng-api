@@ -99,13 +99,19 @@ router.put('/admin/:id', userMiddleware.isLoggedInCookie, userMiddleware.repeatP
     if (!db.Admin.data.some(e => e.id === req.params.id)) return res.status(400).send({ msg: 'User not found' })
     else {
         const id = db.Admin.data.findIndex(e => e.id === req.params.id)
-        db.Admin.data[id] = {
-            id: req.params.id,
-            name: req.body.username,
-            email: req.body.email,
-            password: req.body.password
-        }
-        return res.status(200).send({ msg: 'Edited' })
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+            if (err) {
+                return res.status(500).send({ msg: err })
+            } else {
+                db.Admin.data[id] = {
+                    id: req.params.id,
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: hash
+                }
+                return res.status(201).send({ msg: 'Edited' })
+            }
+        })
     }
 })
 
