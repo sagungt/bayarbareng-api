@@ -95,7 +95,7 @@ router.delete('/admin/:id', userMiddleware.isLoggedInCookie, (req, res, next) =>
 })
 
 // edit admin user
-router.post('/admin/:id', userMiddleware.isLoggedInCookie, userMiddleware.repeatPassword, (req, res, next) => {
+router.put('/admin/:id', userMiddleware.isLoggedInCookie, userMiddleware.repeatPassword, (req, res, next) => {
     if (!db.Admin.data.some(e => e.id === req.params.id)) return res.status(400).send({ msg: 'User not found' })
     else {
         const id = db.Admin.data.findIndex(e => e.id === req.params.id)
@@ -114,7 +114,7 @@ router.post('/customer', userMiddleware.isLoggedInCookie, userMiddleware.subscri
     if (db.Customer.data.some(e => e.email === req.body.email)) return res.status(400).send({ msg: 'Already subscribe' })
     else {
         db.Customer.data.push({
-            id: db.Customer.data.length + 1,
+            id: uuid.v4(),
             email: req.body.email,
             langganan: req.body.langganan,
             lama_langganan: req.body.lama_langganan
@@ -134,7 +134,7 @@ router.delete('/customer/:id', userMiddleware.isLoggedInCookie, (req, res, next)
 })
 
 // edit customer
-router.post('/customer/:id', userMiddleware.isLoggedInCookie, userMiddleware.subscriptionList, (req, res, next) => {
+router.put('/customer/:id', userMiddleware.isLoggedInCookie, userMiddleware.subscriptionList, (req, res, next) => {
     if (!db.Customer.data.some(e => e.id === req.params.id)) return res.status(400).send({ msg: 'User not found' })
     else {
         const id = db.Customer.data.findIndex(e => e.id === req.params.id)
