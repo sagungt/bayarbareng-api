@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const db = require('./dummy.js')
 
 const router = express.Router()
-const userMiddleware = require('./middleware/users.js')
+const userMiddleware = require('../middleware/users.js')
 
 // admin signup
 router.post('/sign-up', userMiddleware.validateRegister, (req, res, next) => {

@@ -2,10 +2,11 @@
   "name": "bayarbareng-api",
   "version": "0.1.0",
   "description": "Bayar Bareng API",
+  "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node index.js"
   },
-  "author": "",
+  "author": "bayarbareng",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -16,6 +17,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mariadb": "^2.5.3",
+    "sequelize": "^6.6.2",
     "uuid": "^8.3.2"
   }
 }
