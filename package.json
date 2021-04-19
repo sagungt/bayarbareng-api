@@ -4,7 +4,7 @@
   "description": "Bayar Bareng API",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "dev": "nodemon index.js"
   },
   "author": "bayarbareng",
   "license": "ISC",
@@ -20,5 +20,12 @@
     "mariadb": "^2.5.3",
     "sequelize": "^6.6.2",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.7",
+    "sequelize-cli": "^6.2.0"
   }
 }

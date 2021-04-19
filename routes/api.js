@@ -1,9 +1,9 @@
-const express = require('express')
+const express = require('express');
 
-const Services = require('../controllers/Services')
+const Services = require('../controllers/Services');
 
-const api = express.Router()
+const api = express.Router();
 
-api.get('/services', Services.getServices)
+api.get('/services', Services.getServices);
 
-module.exports = api
+module.exports = api;
