@@ -1,9 +1,15 @@
 const Sequelize = require('sequelize');
-const ENV = require('../env');
+const {
+  database,
+  username,
+  password,
+  host,
+  dialect,
+} = require('../env');
 
-const db = new Sequelize(ENV.database, ENV.username, ENV.password, {
-  host: ENV.host,
-  dialect: ENV.dialect,
+const db = new Sequelize(database, username, password, {
+  host,
+  dialect,
 });
 
 module.exports = db;

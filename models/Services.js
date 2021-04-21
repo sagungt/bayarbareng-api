@@ -1,15 +1,22 @@
-const Sequelize = require('sequelize')
-const db = require('../config/database')
+const {
+  Model,
+} = require('sequelize');
 
-const { DataTypes } = Sequelize
-
-const Services = db.define('services', {
-    name: {
-        type: DataTypes.STRING
+module.exports = (sequelize, DataTypes) => {
+  class Services extends Model {
+    static associate(models) {
+      // assotiation to Package table using alias "Plan"
+      this.hasMany(models.Packages, {
+        foreignKey: 'serviceId',
+        as: 'Plan',
+      });
     }
-}, {
-    // freezeTableName: true
-    timestamps: false
-})
-
-module.exports = Services
+  }
+  Services.init({
+    serviceName: DataTypes.STRING,
+  }, {
+    sequelize,
+    modelName: 'Services',
+  });
+  return Services;
+};

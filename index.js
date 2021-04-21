@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const db = require('./config/database');
-const ENV = require('./env');
-const api = require('./routes/api');
+const { serverPort } = require('./env');
+const api = require('./routes/api/index');
 
 const app = express();
 
@@ -15,11 +15,10 @@ app.use(cookieParser());
 
 try {
   db.authenticate();
-  console.log('connection established');
 } catch (err) {
-  console.log('unable to connect: ', err);
+  throw new Error(err);
 }
 
 app.use('/api/v1', api);
 
-app.listen(ENV.serverPort, () => console.log(`Testing on ${ENV.serverPort}`));
+app.listen(serverPort);
