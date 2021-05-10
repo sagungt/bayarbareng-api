@@ -5,7 +5,7 @@ const {
   password,
   host,
   dialect,
-} = require('../env');
+} = require('../../.env');
 
 const db = new Sequelize(database, username, password, {
   host,

@@ -4,7 +4,7 @@
   "description": "Bayar Bareng API",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon ./src/index.js",
     "migrate": "npx sequelize-cli db:migrate"
   },
   "author": "bayarbareng",
@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "faker": "^5.5.3",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.3",
     "morgan": "^1.10.0",

@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const db = require('./config/database');
-const { serverPort } = require('./env');
-const api = require('./routes/api/index');
+const { serverPort } = require('../.env');
+const api = require('./api/v1/routes/api/index');
+const auth = require('./api/v1/routes/auth/index');
 
 const app = express();
 
@@ -20,5 +21,6 @@ try {
 }
 
 app.use('/api/v1', api);
+app.use('/auth', auth);
 
 app.listen(serverPort);

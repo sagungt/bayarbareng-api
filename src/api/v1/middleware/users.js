@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const db = require('../dummy/dummy');
 
 module.exports = {
   validateRegister: (req, res, next) => {
@@ -34,11 +33,6 @@ module.exports = {
   },
   repeatPassword: (req, res, next) => {
     if (!req.body.password_repeat || req.body.password !== req.body.password_repeat) return res.status(400).send({ msg: 'Password didn\'t match' });
-    next();
-  },
-  subscriptionList: (req, res, next) => {
-    const services = db.Paket.data.map((e) => e.nama_paket);
-    if (!services.some((e) => e === req.body.langganan)) return res.status(401).send({ msg: 'Service not available yet' });
     next();
   },
 };

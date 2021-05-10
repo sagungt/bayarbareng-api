@@ -1,5 +1,5 @@
 node_modules
-env.js
-config/config.json
+.env.js
+src/config/config.json
 .vscode
 querytest.js
