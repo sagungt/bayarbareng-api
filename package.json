@@ -21,7 +21,10 @@
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.3",
     "morgan": "^1.10.0",
+    "rotating-file-stream": "^2.1.5",
     "sequelize": "^6.6.2",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

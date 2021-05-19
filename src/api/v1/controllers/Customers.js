@@ -1,20 +1,62 @@
+const { Sequelize } = require('sequelize');
 const { v4, validate } = require('uuid');
-const { Customers, Details, Groups } = require('../models');
+const {
+  Customers, Details, Groups, Users, Packages, Services,
+} = require('../models');
+
+const optionsCustomer = (whereValue = null) => ({
+  where: (whereValue !== null) ? whereValue : '',
+  attributes: [
+    'userId',
+    'detailId',
+    'groupId',
+  ],
+  include: [
+    {
+      model: Users,
+      as: 'CustomerUser',
+      attributes: [
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+      ],
+    },
+    {
+      model: Groups,
+      as: 'CustomerGroup',
+      attributes: ['members'],
+    },
+    {
+      model: Details,
+      as: 'CustomerDetail',
+      attributes: ['currentCharge', 'dueDate', 'isActive'],
+      include: {
+        model: Packages,
+        as: 'PackageDetail',
+        attributes: ['id', 'planName', 'price'],
+        include: {
+          model: Services,
+          as: 'Plan',
+          attributes: ['serviceName'],
+        },
+      },
+    },
+  ],
+});
 
 module.exports = {
   findCustomersByUserId: async (req, res) => {
     try {
-      const customers = await Customers.findAll({
-        where: { id: req.body.userId },
-        include: ['CustomerUser', 'CustomerDetail', 'CustomerGroup'],
-      });
-      if (customers) {
+      const { id } = req.params;
+      const customer = await Customers.findAll(optionsCustomer({ userId: id }));
+      if (customer.length !== 0) {
         return res.status(200).json({
           status: 'success',
-          customers,
+          customer,
         });
       }
-      throw new Error(`Customers with ID:${req.body.userId} not found`);
+      throw new Error(`Customers with ID:${id} not found`);
     } catch (err) {
       return res.status(500).json({
         status: 'failed',
@@ -24,17 +66,15 @@ module.exports = {
   },
   findCustomersByGroupId: async (req, res) => {
     try {
-      const customers = await Customers.findAll({
-        where: { id: req.body.groupId },
-        include: ['CustomerUser', 'CustomerDetail', 'CustomerGroup'],
-      });
-      if (customers) {
+      const { id } = req.params;
+      const customer = await Customers.findAll(optionsCustomer({ groupId: id }));
+      if (customer.length !== 0) {
         return res.status(200).json({
           status: 'success',
-          customers,
+          customer,
         });
       }
-      throw new Error(`Customers with ID:${req.body.grupId} not found`);
+      throw new Error(`Customers with ID:${id} not found`);
     } catch (err) {
       return res.status(500).json({
         status: 'failed',
@@ -44,17 +84,15 @@ module.exports = {
   },
   findCustomersByDetailId: async (req, res) => {
     try {
-      const details = await Customers.findAll({
-        where: { detailId: req.body.detailId },
-        include: 'CustomerDetail',
-      });
-      if (details) {
+      const { id } = req.params;
+      const customer = await Customers.findOne(optionsCustomer({ detailId: id }));
+      if (customer) {
         return res.status(200).json({
           status: 'success',
-          details,
+          customer,
         });
       }
-      throw new Error(`Customers with ID:${req.body.detailId} not found`);
+      throw new Error(`Customers with ID:${req.params.id} not found`);
     } catch (err) {
       return res.status(500).json({
         status: 'failed',
@@ -82,16 +120,20 @@ module.exports = {
           members: 5,
         });
       }
-      const customer = await Customers.create({
+      await Customers.create({
         UserId: req.body.userId,
         DetailId: detailId,
         groupId,
         selfGranted: false,
       });
-      return res.status(201).json({
-        status: 'success',
-        customer,
-      });
+      const customer = await Customers.findOne(optionsCustomer({ detailId }));
+      if (customer) {
+        return res.status(201).json({
+          status: 'success',
+          customer,
+        });
+      }
+      throw new Error('Failed to create customer');
     } catch (err) {
       return res.status(500).json({
         status: 'failed',
@@ -99,9 +141,13 @@ module.exports = {
       });
     }
   },
-  getAllGroup: async (req, res) => {
+  getAllGroups: async (req, res) => {
     try {
-      const groups = await Groups.findAll();
+      const groups = await Groups.findAll({
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+      });
       if (groups) {
         return res.status(200).json({
           status: 'success',
@@ -118,10 +164,8 @@ module.exports = {
   },
   getAllCustomer: async (req, res) => {
     try {
-      const customers = await Customers.findAll({
-        include: ['CustomerUser', 'CustomerGroup', 'CustomerDetail'],
-      });
-      if (customers) {
+      const customers = await Customers.findAll(optionsCustomer());
+      if (customers.length !== 0) {
         return res.status(200).json({
           status: 'success',
           customers,

@@ -1,13 +1,17 @@
-const { Packages, Services } = require('../models');
+const { Sequelize } = require('sequelize');
+const { Packages, Services, sequelize } = require('../models');
 
 module.exports = {
   getAllPackages: async (req, res) => {
     try {
       const packages = await Packages.findAll({
+        raw: true,
+        attributes: ['id', 'planName', 'price', [Sequelize.col('Plan.serviceName'), 'provider']],
         include: [
           {
             model: Services,
             as: 'Plan',
+            attributes: [],
           },
         ],
       });
@@ -54,7 +58,20 @@ module.exports = {
         where: { id },
       });
       if (updated) {
-        const plan = await Packages.findOne({ where: { id } });
+        const plan = await Packages.findOne({
+          where: { id },
+          attributes: [
+            'id',
+            'planName',
+            'price',
+            [Sequelize.col('Plan.serviceName'), 'provider'],
+          ],
+          include: {
+            model: Services,
+            as: 'Plan',
+            attributes: [],
+          },
+        });
         return res.status(200).json({
           status: 'success',
           message: 'Package updated',
@@ -74,12 +91,47 @@ module.exports = {
       const { id } = req.params;
       const plan = await Packages.destroy({ where: { id } });
       if (plan) {
-        return res.status(204).json({
+        return res.json({
           status: 'success',
           message: 'Package deleted',
         });
       }
       throw new Error('Package not found');
+    } catch (err) {
+      return res.status(500).json({
+        status: 'failed',
+        message: err.massage,
+      });
+    }
+  },
+  getPackageById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const plan = Packages.findOne({
+        where: { id },
+        raw: true,
+        attributes: [
+          'id',
+          'planName',
+          'price',
+          [Sequelize.col('Plan.serviceName'), 'provider'],
+        ],
+        include: {
+          model: Services,
+          as: 'Plan',
+          attributes: [],
+        },
+      });
+      if (plan) {
+        return res.status(200).json({
+          status: 'success',
+          package: plan,
+        });
+      }
+      return res.status(404).json({
+        status: 'success',
+        message: 'Package not found',
+      });
     } catch (err) {
       return res.status(500).json({
         status: 'failed',

@@ -75,7 +75,14 @@ module.exports = {
   },
   getAllUsers: async (req, res) => {
     try {
-      const users = await Users.findAll();
+      const users = await Users.findAll({
+        attributes: [
+          'firstName',
+          'lastName',
+          'email',
+          'phone',
+        ],
+      });
       return res.status(200).json({
         status: 'success',
         users,
@@ -91,6 +98,13 @@ module.exports = {
     try {
       const { id } = req.params;
       const user = Users.findOne({ where: { id } });
+      if (!user) {
+        return res.status(404).json({
+          status: 'failed',
+          message: `${id} not found`,
+        });
+      }
+
       let password = '';
       if (req.body.password) {
         bcrypt.hash(req.body.password, 10, async (err, hash) => {
@@ -135,12 +149,15 @@ module.exports = {
       const { id } = req.params;
       const user = await Users.destroy({ where: { id } });
       if (user) {
-        return res.status(204).json({
+        return res.json({
           status: 'success',
           message: 'User deleted',
         });
       }
-      throw new Error('Cannot delete user');
+      return res.status(404).json({
+        status: 'failed',
+        message: 'Cannot find user',
+      });
     } catch (err) {
       return res.status(500).json({
         status: 'failed',
@@ -151,14 +168,29 @@ module.exports = {
   getUserById: async (req, res) => {
     try {
       const { id } = req.params;
-      const user = await Users.findOne({ where: { id } });
+      const user = await Users.findOne({
+        where: { id },
+        attributes: [
+          'id',
+          'firstName',
+          'lastName',
+          'email',
+          'phone',
+          'isVerified',
+          'facebook',
+          'twitter',
+        ],
+      });
       if (user) {
         return res.status(200).json({
           status: 'success',
           user,
         });
       }
-      throw new Error('Cannot find user');
+      return res.status(404).json({
+        status: 'success',
+        message: 'Cannot find user',
+      });
     } catch (err) {
       return res.status(500).json({
         status: 'failed',

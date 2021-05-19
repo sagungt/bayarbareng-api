@@ -3,3 +3,4 @@ node_modules
 src/config/config.json
 .vscode
 querytest.js
+src/logs/*
