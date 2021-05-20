@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const rfs = require('rotating-file-stream');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
+const compression = require('compression');
 
 const db = require('./config/database');
 const { serverPort } = require('../.env');
@@ -15,6 +16,7 @@ const swaggerOption = require('./api/v1/docs');
 
 const app = express();
 
+app.use(compression());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
